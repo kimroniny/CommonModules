@@ -2,10 +2,11 @@ import smtplib
 from email.mime.text import MIMEText
 
 def send_mail(msg):
+    msg = str(msg) # 加一个类型转换
     msg_from='1301862177@qq.com'
     passwd='**********'
     msg_to='1301862177@qq.com'
-                                
+                
     subject="email subject"
     msg = MIMEText(msg)
     msg['Subject'] = subject
