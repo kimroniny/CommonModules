@@ -19,4 +19,5 @@ my_handler.setFormatter(log_formatter)
 my_handler.setLevel(logging.INFO)
 
 logger = logging.getLogger(__name__) # 如果没有__name__那么调取的就是root logger, 即所有的消息
+logger.setLevel(logging.INFO)
 logger.addHandler(my_handler)

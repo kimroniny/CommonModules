@@ -15,8 +15,8 @@ def send_mail(msg):
         s = smtplib.SMTP_SSL("smtp.qq.com",465)
         s.login(msg_from, passwd)
         s.sendmail(msg_from, msg_to, msg.as_string())
-        print("send mail success, MESSAGE:{msg}".format(msg=msg))
+        print("send mail success, MESSAGE:\n{msg}".format(msg=msg))
     except s.SMTPException as e:
-        print("send mail failed, ERROR:{err}".format(err=str(e)))
+        print("send mail failed, ERROR:\n{err}".format(err=str(e)))
     finally:
         s.quit()
