@@ -1,9 +1,19 @@
-import sqlite3
+import sqlite3, MySQLdb
 import traceback
 
 class SqlTool(object):
-    def __init__(self, db_name):
-        self.__conn = sqlite3.connect(db_name)
+    def __init__(self, db_type='sqlite3', config={'db': 'sqltool_default'}):
+        if db_type == 'mysql':
+            self.__conn = MySQLdb.connect(
+                host=config['host'],
+                user=config['user'],
+                passwd=config['passwd'],
+                db=config.get('db', 'mysql'),
+                port=config.get('port', 3306),
+                charset=config.get('charset', 'utf8')
+            )
+        else:
+            self.__conn = sqlite3.connect(config['db'])
         self.__cursor = self.__conn.cursor()
     
     def execute(self, statement):
@@ -46,7 +56,7 @@ class SqlTool(object):
     def insert(self, table, valueDict):
         try:
             keys = ",".join('`{}`'.format(key) for key in valueDict.keys())
-            values = ",".join("'{}'".format(valueDict[key]) for key in valueDict.keys())
+            values = ",".join("'{}'".format(self.__conn.escape_string(str(valueDict[key])).decode()) for key in valueDict.keys()) # escape_string return bytes, `format` not convert bytes to str in python3 but python2 
             statement = "insert into {table} ({keys}) values ({values})".format(
                 table=table,
                 keys=keys,
@@ -66,6 +76,9 @@ class SqlTool(object):
             return result[0]['count(*)']
         else:
             return -1
+    
+    def fetchall(self):
+        return self.__cursor.fetchall()
 
     def __del__(self):
         self.__cursor.close()
